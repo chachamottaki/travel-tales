@@ -47,6 +47,7 @@ fun LoginPage(onLoginClick: (String, String) -> Unit) {
             label = { Text("Email address") },
             shape = RoundedCornerShape(16.dp),
             colors = TextFieldDefaults.textFieldColors(
+                containerColor = Color(0xFFFFEBEE),
                 focusedIndicatorColor = Color.Transparent,
                 unfocusedIndicatorColor = Color.Transparent
             ),
@@ -62,6 +63,7 @@ fun LoginPage(onLoginClick: (String, String) -> Unit) {
             visualTransformation = PasswordVisualTransformation(),
             shape = RoundedCornerShape(16.dp),
             colors = TextFieldDefaults.textFieldColors(
+                containerColor = Color(0xFFFFEBEE),
                 focusedIndicatorColor = Color.Transparent,
                 unfocusedIndicatorColor = Color.Transparent
             ),
@@ -81,34 +83,10 @@ fun LoginPage(onLoginClick: (String, String) -> Unit) {
             onClick = { onLoginClick(email.text, password.text) },
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(bottom = 8.dp)
+                .padding(bottom = 8.dp),
+            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFF48FB1))
         ) {
             Text("Log in")
-        }
-
-        Text(
-            text = "OR",
-            style = MaterialTheme.typography.bodyMedium,
-            modifier = Modifier.padding(bottom = 8.dp)
-        )
-
-        Button(
-            onClick = { /* TODO: Implement Facebook login */ },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(bottom = 8.dp),
-            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF3b5998))
-        ) {
-            Text("Continue with Facebook", color = Color.White)
-        }
-
-        Button(
-            onClick = { /* TODO: Implement Google login */ },
-            modifier = Modifier
-                .fillMaxWidth(),
-            colors = ButtonDefaults.buttonColors(containerColor = Color.White)
-        ) {
-            Text("Continue with Google", color = Color.Gray)
         }
     }
 }
