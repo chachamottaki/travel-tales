@@ -1,24 +1,45 @@
 package com.example.traveltales
 
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.traveltales.ui.theme.*
+import com.example.traveltales.viewmodel.LoginViewModel
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun LoginPage(onLoginClick: (String, String) -> Unit) {
+fun LoginPage(viewModel: LoginViewModel = viewModel(), onLoginClick: (String, String) -> Unit) {
     var email by remember { mutableStateOf(TextFieldValue()) }
     var password by remember { mutableStateOf(TextFieldValue()) }
+    val context = LocalContext.current
+    val loginResult by viewModel.loginResult.observeAsState() // Changed to observeAsState
+
+    // Handle changes in loginResult
+    LaunchedEffect(loginResult) {
+        loginResult?.let {
+            if (it.isSuccess) {
+                Toast.makeText(context, it.getOrNull(), Toast.LENGTH_SHORT).show()
+                onLoginClick(email.text, password.text)
+            } else {
+                Toast.makeText(context, it.exceptionOrNull()?.message, Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -31,7 +52,7 @@ fun LoginPage(onLoginClick: (String, String) -> Unit) {
             painter = painterResource(id = R.drawable.logo),
             contentDescription = "App Logo",
             modifier = Modifier
-                .size(250.dp)  // logo size
+                .size(250.dp)
                 .padding(bottom = 32.dp)
         )
 
@@ -80,7 +101,9 @@ fun LoginPage(onLoginClick: (String, String) -> Unit) {
         )
 
         Button(
-            onClick = { onLoginClick(email.text, password.text) },
+            onClick = {
+                viewModel.login(email.text, password.text) // Use ViewModel for login
+            },
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(bottom = 8.dp),
