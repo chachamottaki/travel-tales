@@ -27,13 +27,14 @@ fun HomePage(viewModel: LoginViewModel) {
             .padding(16.dp)
     ) {
         Text(
-            text = "Welcome to the Home Page",
+            text = "Create or Edit a Journal",
             style = MaterialTheme.typography.headlineMedium,
             modifier = Modifier.padding(bottom = 16.dp)
         )
         if (journals.isNotEmpty()) {
             journals.forEach { journal ->
                 JournalItem(
+                    name = journal.name,
                     journalId = journal.journal_id,
                     themeId = journal.theme_id,
                     onClick = {

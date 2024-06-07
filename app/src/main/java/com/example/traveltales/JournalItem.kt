@@ -12,7 +12,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun JournalItem(journalId: Int, themeId: Int?, onClick: () -> Unit) {
+fun JournalItem(journalId: Int, name: String, themeId: Int?, onClick: () -> Unit) {
     Button(
         onClick = onClick,
         shape = RoundedCornerShape(16.dp),
@@ -21,6 +21,6 @@ fun JournalItem(journalId: Int, themeId: Int?, onClick: () -> Unit) {
             .fillMaxWidth()
             .padding(vertical = 8.dp)
     ) {
-        Text(text = "Journal ID: $journalId, Theme ID: ${themeId ?: "None"}")
+        Text(text = "$name")
     }
 }
