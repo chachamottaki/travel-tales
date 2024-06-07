@@ -2,12 +2,8 @@ package com.example.traveltales
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -25,7 +21,7 @@ fun HomePage(viewModel: LoginViewModel) {
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Top,
+        verticalArrangement = Arrangement.Center,
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp)
@@ -35,28 +31,19 @@ fun HomePage(viewModel: LoginViewModel) {
             style = MaterialTheme.typography.headlineMedium,
             modifier = Modifier.padding(bottom = 16.dp)
         )
-
         if (journals.isNotEmpty()) {
-            LazyVerticalGrid(
-                columns = GridCells.Fixed(2),
-                contentPadding = PaddingValues(8.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp),
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                modifier = Modifier.fillMaxSize()
-            ) {
-                items(journals) { journal ->
-                    JournalGridItem(
-                        journalId = journal.journal_id,
-                        name = journal.name,
-                        themeId = journal.theme_id,
-                        onClick = {
-                            // navigate to journal entries screen
-                        }
-                    )
-                }
+            journals.forEach { journal ->
+                JournalItem(
+                    name = journal.name,
+                    journalId = journal.journal_id,
+                    themeId = journal.theme_id,
+                    onClick = {
+                        // navigate to journal entries :p
+                    }
+                )
             }
             Button(
-                onClick = { /* Navigate to Create Journal */ },
+                onClick = { /* Navigate to Create Journal Screen */ },
                 modifier = Modifier.padding(top = 16.dp)
             ) {
                 Text("Create Journal")
@@ -68,7 +55,7 @@ fun HomePage(viewModel: LoginViewModel) {
                 modifier = Modifier.padding(bottom = 16.dp)
             )
             Button(
-                onClick = { /* Navigate to Create Journal */ },
+                onClick = { /* Navigate to Create Journal Screen */ },
                 modifier = Modifier.padding(top = 16.dp)
             ) {
                 Text("Create Journal")
