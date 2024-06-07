@@ -1,15 +1,16 @@
 package com.example.traveltales.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.traveltales.network.ApiClient
+import com.example.traveltales.network.JournalResponse
 import com.example.traveltales.network.LoginRequest
 import com.example.traveltales.network.LoginResponse
 import com.example.traveltales.network.setToken
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-import android.util.Log
 
 class LoginViewModel : ViewModel() {
     private val _loginResult = MutableStateFlow<Result<String>?>(null)
@@ -18,8 +19,8 @@ class LoginViewModel : ViewModel() {
     private val _userToken = MutableStateFlow<String?>(null) // Define _userToken
     val userToken: StateFlow<String?> = _userToken // Define userToken
 
-    private val _userData = MutableStateFlow<String>("")
-    val userData: StateFlow<String> = _userData
+    private val _journals = MutableStateFlow<List<JournalResponse>>(emptyList())
+    val journals: StateFlow<List<JournalResponse>> = _journals
 
     fun login(email: String, password: String) {
         viewModelScope.launch {
@@ -28,22 +29,24 @@ class LoginViewModel : ViewModel() {
                 _loginResult.value = Result.success("Login successful. Token: ${response.token}")
                 _userToken.value = response.token // Store user token on successful login
                 setToken(response.token) // Set token for future requests
-                fetchUserData(response.token) // Fetch user-specific data
+                fetchUserJournals(response.token) // Fetch user journals
             } catch (e: Exception) {
                 _loginResult.value = Result.failure(e)
             }
         }
     }
 
-    private fun fetchUserData(token: String) {
+    private fun fetchUserJournals(token: String) {
         viewModelScope.launch {
             try {
                 val userId = extractUserIdFromToken(token)
-                val response = ApiClient.retrofitService.getUserData("Bearer $token", userId)
-                _userData.value = response.data
+                Log.d("LoginViewModel", "Fetching journals for user ID: $userId") // Log user ID
+                val journals = ApiClient.retrofitService.getUserJournals("Bearer $token", userId)
+                Log.d("LoginViewModel", "Journals fetched: $journals") // Log fetched journals
+                _journals.value = journals
             } catch (e: Exception) {
-                Log.e("LoginViewModel", "Error fetching user data", e)
-                _userData.value = "Failed to fetch user data"
+                Log.e("LoginViewModel", "Error fetching journals", e) // Log error
+                _journals.value = emptyList()
             }
         }
     }

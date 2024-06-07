@@ -10,9 +10,6 @@ interface ApiService {
     @POST("/login")
     suspend fun login(@Body request: LoginRequest): LoginResponse
 
-    @GET("/user/{user_id}")
-    suspend fun getUserData(
-        @Header("Authorization") token: String,
-        @Path("user_id") userId: String
-    ): UserDataResponse
+    @GET("/user/{user_id}/journals")
+    suspend fun getUserJournals(@Header("Authorization") authHeader: String, @Path("user_id") userId: String): List<JournalResponse>
 }
