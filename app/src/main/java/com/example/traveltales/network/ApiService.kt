@@ -22,4 +22,10 @@ interface ApiService {
         @Path("user_id") userId: String,
         @Body request: CreateJournalRequest
     ): JournalResponse
+
+    @GET("/journal/{journal_id}/entries")
+    suspend fun getJournalEntries(
+        @Header("Authorization") authHeader: String,
+        @Path("journal_id") journalId: Int
+    ): List<EntryResponse>
 }

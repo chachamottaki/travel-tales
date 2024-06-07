@@ -1,5 +1,6 @@
 package com.example.traveltales
 
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -19,7 +20,7 @@ import androidx.compose.ui.unit.dp
 import com.example.traveltales.viewmodel.LoginViewModel
 
 @Composable
-fun HomePage(viewModel: LoginViewModel) {
+fun HomePage(viewModel: LoginViewModel, onJournalClick: (Int) -> Unit) {
     val journals by viewModel.journals.collectAsState()
     var showDialog by remember { mutableStateOf(false) }
 
@@ -42,15 +43,10 @@ fun HomePage(viewModel: LoginViewModel) {
                     journalId = journal.journal_id,
                     themeId = journal.theme_id,
                     onClick = {
-                        // navigate to journal entries :p
+                        Log.d("HomePage", "Journal clicked: ${journal.journal_id}")
+                        onJournalClick(journal.journal_id)
                     }
                 )
-            }
-            Button(
-                onClick = { showDialog = true },
-                modifier = Modifier.padding(top = 16.dp)
-            ) {
-                Text("Create Journal")
             }
         } else {
             Text(
@@ -58,18 +54,20 @@ fun HomePage(viewModel: LoginViewModel) {
                 style = MaterialTheme.typography.bodyMedium,
                 modifier = Modifier.padding(bottom = 16.dp)
             )
-            Button(
-                onClick = { /* Navigate to Create Journal Screen */ },
-                modifier = Modifier.padding(top = 16.dp)
-            ) {
-                Text("Create Journal")
-            }
+        }
+        Button(
+            onClick = { showDialog = true },
+            modifier = Modifier.padding(top = 16.dp)
+        ) {
+            Text("Create Journal")
         }
         if (showDialog) {
             CreateJournalDialog(
                 onDismiss = { showDialog = false },
                 onConfirm = { journalName ->
                     viewModel.createJournal(journalName)
+                    viewModel.fetchUserJournals(viewModel.userToken.value ?: "") // Fetch journals after creation
+                    showDialog = false
                 }
             )
         }

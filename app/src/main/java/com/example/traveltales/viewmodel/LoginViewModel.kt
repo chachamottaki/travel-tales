@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.traveltales.network.ApiClient
 import com.example.traveltales.network.CreateJournalRequest
+import com.example.traveltales.network.EntryResponse
 import com.example.traveltales.network.JournalResponse
 import com.example.traveltales.network.LoginRequest
 import com.example.traveltales.network.LoginResponse
@@ -17,25 +18,29 @@ class LoginViewModel : ViewModel() {
     private val _loginResult = MutableStateFlow<Result<String>?>(null)
     val loginResult: StateFlow<Result<String>?> = _loginResult
 
-    private val _userToken = MutableStateFlow<String?>(null) // Define _userToken
-    val userToken: StateFlow<String?> = _userToken // Define userToken
+    private val _userToken = MutableStateFlow<String?>(null)
+    val userToken: StateFlow<String?> = _userToken
 
     private val _journals = MutableStateFlow<List<JournalResponse>>(emptyList())
     val journals: StateFlow<List<JournalResponse>> = _journals
+
+    private val _entries = MutableStateFlow<List<EntryResponse>>(emptyList())
+    val entries: StateFlow<List<EntryResponse>> = _entries
 
     fun login(email: String, password: String) {
         viewModelScope.launch {
             try {
                 val response: LoginResponse = ApiClient.retrofitService.login(LoginRequest(email, password))
                 _loginResult.value = Result.success("Login successful. Token: ${response.token}")
-                _userToken.value = response.token // Store user token on successful login
-                setToken(response.token) // Set token for future requests
-                fetchUserJournals(response.token) // Fetch user journals
+                _userToken.value = response.token
+                setToken(response.token)
+                fetchUserJournals(response.token)
             } catch (e: Exception) {
                 _loginResult.value = Result.failure(e)
             }
         }
     }
+
     fun createJournal(journalName: String) {
         viewModelScope.launch {
             try {
@@ -44,28 +49,43 @@ class LoginViewModel : ViewModel() {
                     val response = ApiClient.retrofitService.createJournal(
                         "Bearer $token", userId, CreateJournalRequest(journalName)
                     )
-                    fetchUserJournals(token) // Refresh the journal list after creating a new journal
+                    fetchUserJournals(token)
                 }
             } catch (e: Exception) {
-                Log.e("LoginViewModel", "Error creating journal", e) // Log error
+                Log.e("LoginViewModel", "Error creating journal", e)
             }
         }
     }
 
-    private fun fetchUserJournals(token: String) {
+    fun fetchEntries(journalId: Int) {
+        viewModelScope.launch {
+            try {
+                val token = _userToken.value ?: return@launch
+                Log.d("LoginViewModel", "Fetching entries for journalId: $journalId with token: $token")
+                val entries = ApiClient.retrofitService.getJournalEntries("Bearer $token", journalId)
+                Log.d("LoginViewModel", "Entries fetched: $entries")
+                _entries.value = entries
+            } catch (e: Exception) {
+                Log.e("LoginViewModel", "Error fetching entries", e)
+            }
+        }
+    }
+
+    fun fetchUserJournals(token: String) {
         viewModelScope.launch {
             try {
                 val userId = extractUserIdFromToken(token)
-                Log.d("LoginViewModel", "Fetching journals for user ID: $userId") // Log user ID
+                Log.d("LoginViewModel", "Fetching journals for user ID: $userId")
                 val journals = ApiClient.retrofitService.getUserJournals("Bearer $token", userId)
-                Log.d("LoginViewModel", "Journals fetched: $journals") // Log fetched journals
+                Log.d("LoginViewModel", "Journals fetched: $journals")
                 _journals.value = journals
             } catch (e: Exception) {
-                Log.e("LoginViewModel", "Error fetching journals", e) // Log error
+                Log.e("LoginViewModel", "Error fetching journals", e)
                 _journals.value = emptyList()
             }
         }
     }
+
     private fun extractUserIdFromToken(token: String): String {
         val parts = token.split(".")
         if (parts.size == 3) {
@@ -75,5 +95,4 @@ class LoginViewModel : ViewModel() {
         }
         return ""
     }
-
 }

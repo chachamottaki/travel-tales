@@ -22,8 +22,12 @@ private val client = OkHttpClient.Builder().addInterceptor { chain ->
     chain.proceed(requestBuilder.build())
 }.build()
 
+private val json = Json {
+    ignoreUnknownKeys = true // Add this line to ignore unknown keys
+}
+
 private val retrofit = Retrofit.Builder()
-    .addConverterFactory(Json.asConverterFactory("application/json".toMediaType()))
+    .addConverterFactory(json.asConverterFactory("application/json".toMediaType()))
     .baseUrl(BASE_URL)
     .client(client)
     .build()

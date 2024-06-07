@@ -2,5 +2,6 @@
     <string name="app_name">TravelTales</string>
     <string name="login">Login</string>
     <string name="home"></string>
+    <string name="entries">Your Journal Entries</string>
     <string name="back_button">Back</string>
 </resources>

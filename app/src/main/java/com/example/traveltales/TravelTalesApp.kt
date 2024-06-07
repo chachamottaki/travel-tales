@@ -1,5 +1,6 @@
 package com.example.traveltales
 
+import android.util.Log
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -29,7 +30,7 @@ fun TravelTalesApp(
 ) {
     val backStackEntry by navController.currentBackStackEntryAsState()
     val currentScreen = TravelTalesScreen.valueOf(
-        backStackEntry?.destination?.route ?: TravelTalesScreen.Login.name
+        backStackEntry?.destination?.route?.split("/")?.get(0) ?: TravelTalesScreen.Login.name
     )
 
     Scaffold(
@@ -59,7 +60,16 @@ fun TravelTalesApp(
                 )
             }
             composable(route = TravelTalesScreen.Home.name) {
-                HomePage(viewModel = viewModel)
+                HomePage(viewModel = viewModel, onJournalClick = { journalId ->
+                    viewModel.fetchEntries(journalId)
+                    Log.d("HomePage", "Navigating to Entries screen for journalId: $journalId")
+                    navController.navigate("Entries/$journalId")
+                })
+            }
+            composable(route = "Entries/{journalId}") { backStackEntry ->
+                val journalId = backStackEntry.arguments?.getString("journalId")?.toInt() ?: 0
+                Log.d("TravelTalesApp", "Displaying Entries screen for journalId: $journalId")
+                JournalEntriesScreen(viewModel = viewModel, journalId = journalId)
             }
         }
 
@@ -87,7 +97,7 @@ fun TravelTalesAppBar(
                 modifier = Modifier.fillMaxWidth(),
                 contentAlignment = Alignment.Center
             ) {
-                //if i want to add text to my topbar
+                // if i want to add text to my topbar
             }
         },
         colors = TopAppBarDefaults.mediumTopAppBarColors(
