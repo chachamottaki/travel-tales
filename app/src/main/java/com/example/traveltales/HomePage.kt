@@ -33,10 +33,12 @@ fun HomePage(viewModel: LoginViewModel) {
         )
         if (journals.isNotEmpty()) {
             journals.forEach { journal ->
-                Text(
-                    text = "Journal ID: ${journal.journal_id}, Theme ID: ${journal.theme_id}",
-                    style = MaterialTheme.typography.bodyMedium,
-                    modifier = Modifier.padding(bottom = 8.dp)
+                JournalItem(
+                    journalId = journal.journal_id,
+                    themeId = journal.theme_id,
+                    onClick = {
+                        // navigate to journal entries :p
+                    }
                 )
             }
             Button(
