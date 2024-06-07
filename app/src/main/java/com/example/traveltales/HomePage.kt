@@ -39,6 +39,12 @@ fun HomePage(viewModel: LoginViewModel) {
                     modifier = Modifier.padding(bottom = 8.dp)
                 )
             }
+            Button(
+                onClick = { /* Navigate to Create Journal Screen */ },
+                modifier = Modifier.padding(top = 16.dp)
+            ) {
+                Text("Create Journal")
+            }
         } else {
             Text(
                 text = "No journals found",
