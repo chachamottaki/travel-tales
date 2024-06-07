@@ -59,7 +59,7 @@ fun TravelTalesApp(
                 )
             }
             composable(route = TravelTalesScreen.Home.name) {
-                HomePage()
+                HomePage(viewModel = viewModel)
             }
         }
 
