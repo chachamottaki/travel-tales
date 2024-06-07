@@ -4,6 +4,7 @@ import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.POST
+import retrofit2.http.PUT
 import retrofit2.http.Path
 
 interface ApiService {
@@ -28,4 +29,11 @@ interface ApiService {
         @Header("Authorization") authHeader: String,
         @Path("journal_id") journalId: Int
     ): List<EntryResponse>
+
+    @PUT("/journal/{journal_id}")
+    suspend fun editJournal(
+        @Header("Authorization") authHeader: String,
+        @Path("journal_id") journalId: Int,
+        @Body request: EditJournalRequest
+    ): JournalResponse
 }

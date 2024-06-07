@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.traveltales.network.ApiClient
 import com.example.traveltales.network.CreateJournalRequest
+import com.example.traveltales.network.EditJournalRequest
 import com.example.traveltales.network.EntryResponse
 import com.example.traveltales.network.JournalResponse
 import com.example.traveltales.network.LoginRequest
@@ -53,6 +54,22 @@ class LoginViewModel : ViewModel() {
                 }
             } catch (e: Exception) {
                 Log.e("LoginViewModel", "Error creating journal", e)
+            }
+        }
+    }
+    fun editJournalName(journalId: Int, newName: String) {
+        viewModelScope.launch {
+            try {
+                _userToken.value?.let { token ->
+                    ApiClient.retrofitService.editJournal(
+                        "Bearer $token",
+                        journalId,
+                        EditJournalRequest(newName)
+                    )
+                    fetchUserJournals(token) // Refresh the journal list after editing the journal name
+                }
+            } catch (e: Exception) {
+                Log.e("LoginViewModel", "Error editing journal name", e) // Log error
             }
         }
     }
