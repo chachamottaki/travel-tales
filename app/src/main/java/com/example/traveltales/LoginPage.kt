@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -20,16 +19,14 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.traveltales.ui.theme.*
 import com.example.traveltales.viewmodel.LoginViewModel
 
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LoginPage(viewModel: LoginViewModel = viewModel(), onLoginClick: (String, String) -> Unit) {
     var email by remember { mutableStateOf(TextFieldValue()) }
     var password by remember { mutableStateOf(TextFieldValue()) }
     val context = LocalContext.current
-    val loginResult by viewModel.loginResult.observeAsState() // Changed to observeAsState
+    val loginResult by viewModel.loginResult.collectAsState()
 
-    // Handle changes in loginResult
     LaunchedEffect(loginResult) {
         loginResult?.let {
             if (it.isSuccess) {
@@ -102,7 +99,7 @@ fun LoginPage(viewModel: LoginViewModel = viewModel(), onLoginClick: (String, St
 
         Button(
             onClick = {
-                viewModel.login(email.text, password.text) // Use ViewModel for login
+                viewModel.login(email.text, password.text)
             },
             modifier = Modifier
                 .fillMaxWidth()
