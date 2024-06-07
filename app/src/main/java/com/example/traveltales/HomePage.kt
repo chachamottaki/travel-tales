@@ -10,6 +10,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -18,6 +21,7 @@ import com.example.traveltales.viewmodel.LoginViewModel
 @Composable
 fun HomePage(viewModel: LoginViewModel) {
     val journals by viewModel.journals.collectAsState()
+    var showDialog by remember { mutableStateOf(false) }
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -43,7 +47,7 @@ fun HomePage(viewModel: LoginViewModel) {
                 )
             }
             Button(
-                onClick = { /* Navigate to Create Journal Screen */ },
+                onClick = { showDialog = true },
                 modifier = Modifier.padding(top = 16.dp)
             ) {
                 Text("Create Journal")
@@ -60,6 +64,14 @@ fun HomePage(viewModel: LoginViewModel) {
             ) {
                 Text("Create Journal")
             }
+        }
+        if (showDialog) {
+            CreateJournalDialog(
+                onDismiss = { showDialog = false },
+                onConfirm = { journalName ->
+                    viewModel.createJournal(journalName)
+                }
+            )
         }
     }
 }

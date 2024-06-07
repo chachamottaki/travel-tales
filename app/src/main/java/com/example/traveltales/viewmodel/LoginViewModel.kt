@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.traveltales.network.ApiClient
+import com.example.traveltales.network.CreateJournalRequest
 import com.example.traveltales.network.JournalResponse
 import com.example.traveltales.network.LoginRequest
 import com.example.traveltales.network.LoginResponse
@@ -32,6 +33,21 @@ class LoginViewModel : ViewModel() {
                 fetchUserJournals(response.token) // Fetch user journals
             } catch (e: Exception) {
                 _loginResult.value = Result.failure(e)
+            }
+        }
+    }
+    fun createJournal(journalName: String) {
+        viewModelScope.launch {
+            try {
+                _userToken.value?.let { token ->
+                    val userId = extractUserIdFromToken(token)
+                    val response = ApiClient.retrofitService.createJournal(
+                        "Bearer $token", userId, CreateJournalRequest(journalName)
+                    )
+                    fetchUserJournals(token) // Refresh the journal list after creating a new journal
+                }
+            } catch (e: Exception) {
+                Log.e("LoginViewModel", "Error creating journal", e) // Log error
             }
         }
     }
