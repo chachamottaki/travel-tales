@@ -17,7 +17,7 @@ fun JournalItem(journalId: Int, name: String, themeId: Int?, onClick: () -> Unit
     Button(
         onClick = onClick,
         shape = RoundedCornerShape(16.dp),
-        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFAED581)), // Light green background
+        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF512A7E)),
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 8.dp)
