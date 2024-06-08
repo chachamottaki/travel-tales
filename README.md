@@ -139,18 +139,21 @@ Handles the business logic and API calls.
 
 The following features are planned to be added to the app:
 
-1. **Entry Management:**
+1. **Sign Up a new User**
+   - Add functionality for users to create an account
+     
+2. **Entry Management:**
    - Add functionality to create, edit, and delete entries within a journal.
    - Allow users to add images or videos to entries.
 
-2. **Journal Management:**
+3. **Journal Management:**
    - Implement the delete journal functionality.
    - Allow users to change the theme of a journal.
 
-3. **Sharing:**
+4. **Sharing:**
    - Add options to share an entry or a journal via social media platforms.
 
-4. **Expense Management:**
+5. **Expense Management:**
    - Implement a feature to track and manage travel expenses within a journal.
 
 
